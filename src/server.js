@@ -30,7 +30,11 @@ app.get('/notes', (req, res) => {
 });
 
 app.get('/notes/:noteId', (req, res) => {
-  res.status(201).json({ message: `Retrieved note with ID: ${req.noteId}` });
+  console.log('noteId: ', req.params.noteId);
+
+  res
+    .status(201)
+    .json({ message: `Retrieved note with ID: ${req.params.noteId}` });
 });
 
 app.get('/test-error', () => {
