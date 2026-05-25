@@ -14,11 +14,10 @@ export const getAllNotes = async (req, res) => {
   }
 
   if (search) {
-    notesQuery.where({
-      $text: {
-        $search: search,
-      },
-    });
+    notesQuery.$or = [
+      { title: { $regex: search, $options: 'i' } },
+      { content: { $regex: search, $options: 'i' } },
+    ];
   }
 
   const [totalNotes, notes] = await Promise.all([

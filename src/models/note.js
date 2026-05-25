@@ -27,7 +27,7 @@ const notesSchema = new Schema(
   { timestamps: true },
 );
 
-notesSchema.index({ tag: 1 });
-notesSchema.index({ title: 'text', content: 'text' });
+notesSchema.index({ tag: 1, userId: 1 });
+// notesSchema.index({ title: 'text', content: 'text' });
 
 export const Note = model('Note', notesSchema);
