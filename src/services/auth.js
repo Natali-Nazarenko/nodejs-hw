@@ -1,13 +1,13 @@
 import { Session } from '../models/session.js';
 import { FIFTEEN_MINUTES, ONE_DAY } from '../constants/time.js';
 
-export const createSession = async (id) => {
+export const createSession = async (userId) => {
   return Session.create({
-    userId: id,
+    userId: userId,
     accessToken: crypto.randomUUID(),
     refreshToken: crypto.randomUUID(),
-    accessTokenValidUntill: new Date(Date.now() + FIFTEEN_MINUTES),
-    refreshTokenValidUntill: new Date(Date.now() + ONE_DAY),
+    accessTokenValidUntil: new Date(Date.now() + FIFTEEN_MINUTES),
+    refreshTokenValidUntil: new Date(Date.now() + ONE_DAY),
   });
 };
 

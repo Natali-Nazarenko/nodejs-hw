@@ -28,7 +28,7 @@ export const loginUser = async (req, res) => {
   const user = await User.findOne({ email: req.body.email });
 
   if (!user) {
-    throw createHttpError(401, 'Invalid creds');
+    throw createHttpError(401, 'Invalid credentials');
   }
 
   const isValidPassword = await bcrypt.compare(
@@ -37,7 +37,7 @@ export const loginUser = async (req, res) => {
   );
 
   if (!isValidPassword) {
-    throw createHttpError(401, 'Invalid creds');
+    throw createHttpError(401, 'Invalid credentials');
   }
 
   await Session.deleteOne({ userId: user._id });
@@ -60,7 +60,7 @@ export const logoutUser = async (req, res) => {
   res.status(204).send();
 };
 
-export const refreshSession = async (req, res) => {
+export const refreshUserSession = async (req, res) => {
   const { sessionId, refreshToken } = req.cookies;
 
   if (!sessionId || !refreshToken) {
@@ -73,16 +73,16 @@ export const refreshSession = async (req, res) => {
   });
 
   if (!session) {
-    throw createHttpError(401, 'Invalid session');
+    throw createHttpError(401, 'Session not found');
   }
 
-  const isRefreshTokenExpired = session.refreshTokenValidUntill < new Date();
+  const isRefreshTokenExpired = session.refreshTokenValidUntil < new Date();
   if (isRefreshTokenExpired) {
     await session.deleteOne();
     res.clearCookie('accessToken');
     res.clearCookie('refreshToken');
     res.clearCookie('sessionId');
-    throw createHttpError(401, 'Invalid session');
+    throw createHttpError(401, 'Session token expired');
   }
 
   //якщо є cookies, є session, є валідний refresh, то:
@@ -91,6 +91,6 @@ export const refreshSession = async (req, res) => {
   setSessionCookies(res, newSession);
 
   res.status(200).json({
-    message: 'Session updated!',
+    message: 'Session refreshed',
   });
 };

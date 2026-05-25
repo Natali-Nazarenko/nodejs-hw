@@ -1,11 +1,12 @@
 import createHttpError from 'http-errors';
 import { Session } from '../models/session.js';
+import { User } from '../models/user.js';
 
-export const authenticate = async (req, res) => {
+export const authenticate = async (req, res, next) => {
   const { sessionId, accessToken } = req.cookies;
 
   if (!sessionId || !accessToken) {
-    throw createHttpError(401, 'Missing token');
+    throw createHttpError(401, 'Missing access token');
   }
 
   const session = await Session.findOne({
@@ -14,12 +15,21 @@ export const authenticate = async (req, res) => {
   });
 
   if (!session) {
-    throw createHttpError(401, 'No session');
+    throw createHttpError(401, 'Session not found');
   }
 
-  const isAccessTokenExpired = session.accessTokenValidUntill < new Date();
+  const isAccessTokenExpired = session.accessTokenValidUntil < new Date();
 
   if (isAccessTokenExpired) {
     throw createHttpError(401, 'Acceess token expired');
   }
+
+  const user = await User.findById(session.userId);
+
+  if (!user) {
+    throw createHttpError(401);
+  }
+
+  req.user = user;
+  next();
 };
