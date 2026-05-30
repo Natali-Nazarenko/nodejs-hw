@@ -94,3 +94,11 @@ export const refreshUserSession = async (req, res) => {
     message: 'Session refreshed',
   });
 };
+
+export const requestResetEmail = async (req, res) => {
+  const user = await User.findOne({ email: req.body.email });
+  if (!user) {
+    return res.status(200).json({ message: 'Email sent, check inbox!' });
+  }
+  res.status(200).json({});
+};
