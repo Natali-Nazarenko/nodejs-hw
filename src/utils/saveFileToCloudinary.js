@@ -7,7 +7,7 @@ cloudinary.config({
   secure: true,
 });
 
-export const saveFileCloudinary = async (buffer, userId) => {
+export const saveFileToCloudinary = async (buffer, userId) => {
   const options = {
     folder: 'notes-app/avatars',
     public_id: `avatar_${userId}`,
